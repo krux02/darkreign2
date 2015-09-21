@@ -9,7 +9,7 @@
 
 #include "vid_public.h"
 #include "godfile.h"
-#include "stdio.h"
+#include <stdio.h>
 #include "console.h"
 //----------------------------------------------------------------------------
 

@@ -7,7 +7,7 @@
 //
 
 #include "vid.h"
-#include "Bucket.h"
+#include "bucket.h"
 //-----------------------------------------------------------------------------
 
 Bucket::Bucket( BucketMan *man)

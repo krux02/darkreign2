@@ -1,0 +1,65 @@
+#!usr/bin/env fish
+
+# this pattern is to extract all include paths
+# grep -o '/I "\([^ ]*\)"' < main.dsp | sort | uniq | sed -n 's/.*"\(.*\)"/\1/p'
+
+set systemdir (dirname "${BASH_SOURCE[0]}")/system
+set scriptdir (pwd)
+
+echo "systemdir $systemdir"
+echo "scriptdir $scriptdir"
+
+for dsp in $(find . | grep \.dsp$ | grep -v 3rdparty); do
+  echo $dsp
+
+  dirs=$(grep -o '/I "[^"]*"' < $dsp | sort | uniq | sed 's,^/I "\([^"]*\)".*$,\1,')
+  dirs="$dirs
+."
+  folder=$(dirname $dsp)
+  cd $folder
+  for file in *.{h,cpp} ; do
+    for include in $(sed -n 's/^#include "\([^"]*\)".*$/\1/p' $file); do
+      found=
+      for dir in $dirs; do 
+        inc=$dir/$include
+        if [ -f $inc ]; then
+          if [ -z $found ]; then
+            found=$inc
+          else
+            if [ $found -ef $inc ]; then
+              #it dosn't matter at all
+              found=$inc
+            else
+              pwd
+              echo "already found $found, but got $inc"
+              found=
+              break
+            fi
+          fi
+        fi
+      done
+      if [ -z $found ]; then
+        echo "in $folder/$file can't resolve include $include"
+        # echo "in file $file"
+        # echo "in dirs "$(tr '\n' ' ' <<< $dirs )
+        # echo "in folder $folder"
+        # pwd
+        # else
+        #TODO actually do something with the found include path
+
+      fi
+    done
+  done
+  cd -
+done
+
+# for file in $(ag -l '#include ".*\.h"'); do
+#   echo FILE $file FILE
+#   for include in $(sed -n 's/#include "\(.*\.h\)"/\1/p' < $file); do
+#     echo A $include
+#     echo B $(ag -g $include)
+#     #echo "s/\"$include\"/<$include>/"
+# 
+#   done
+# done
+
