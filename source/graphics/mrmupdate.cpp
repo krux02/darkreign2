@@ -9,7 +9,7 @@
 
 #include "IMESH.h"
 #include "IMESHUtil.h"
-#include "MRMUpdate.h"
+#include "mrmupdate.h"
 
 #pragma warning(pop)
 #pragma pack(pop, _save_mrmgen_h_)

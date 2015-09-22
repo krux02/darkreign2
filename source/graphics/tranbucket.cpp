@@ -7,7 +7,7 @@
 //
 
 #include "vid_public.h"
-#include "TranBucket.h"
+#include "tranbucket.h"
 
 #define TRANMAXBUCKETCOUNT    64
 //----------------------------------------------------------------------------

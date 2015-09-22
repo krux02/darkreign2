@@ -8,7 +8,7 @@
 
 #include "vid.h"
 #include "light_priv.h"
-#include "Bucket.h"
+#include "bucket.h"
 //-----------------------------------------------------------------------------
 
 void BucketLock::LightCam( VertexTL & dst, const Vector & src, const Vector & norm, Color color) const 

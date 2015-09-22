@@ -39,8 +39,8 @@
 #endif
 
 // local includes go here
-#include "IMESHutil.h"
-#include "MRMUpdate.h"
+#include "IMESHUtil.h"
+#include "mrmupdate.h"
 #include "MRMGenParams.h"
 
 #pragma warning(pop)

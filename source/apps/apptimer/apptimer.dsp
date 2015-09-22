@@ -21,6 +21,8 @@ CFG=apptimer - Win32 Debug
 !MESSAGE "apptimer - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
+# blabla make refactor work /I ""
+
 # Begin Project
 # PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""$/Code/apptimer", JBAAAAAA"

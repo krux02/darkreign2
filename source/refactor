@@ -1,57 +1,89 @@
-#!usr/bin/env fish
+#!/usr/bin/env fish
 
 # this pattern is to extract all include paths
 # grep -o '/I "\([^ ]*\)"' < main.dsp | sort | uniq | sed -n 's/.*"\(.*\)"/\1/p'
 
-set systemdir (dirname "${BASH_SOURCE[0]}")/system
+set systemdir  (dirname (status --current-filename))/system
+set styxnetdir (dirname (status --current-filename))/styxnet
 set scriptdir (pwd)
+set notfound
+set notfound_src
 
 echo "systemdir $systemdir"
 echo "scriptdir $scriptdir"
 
-for dsp in $(find . | grep \.dsp$ | grep -v 3rdparty); do
-  echo $dsp
+for dsp in (find . | grep '\.dsp$' | grep -v 3rdparty)
+  # echo $dsp
 
-  dirs=$(grep -o '/I "[^"]*"' < $dsp | sort | uniq | sed 's,^/I "\([^"]*\)".*$,\1,')
-  dirs="$dirs
-."
-  folder=$(dirname $dsp)
+  set dirs (grep -o '/I "[^"]*"' < $dsp | sort | uniq | sed 's,^/I "\([^"]*\)".*$,\1,')
+
+  # echo "dirs: $dirs"
+
+  set folder (dirname $dsp)
   cd $folder
-  for file in *.{h,cpp} ; do
-    for include in $(sed -n 's/^#include "\([^"]*\)".*$/\1/p' $file); do
-      found=
-      for dir in $dirs; do 
-        inc=$dir/$include
-        if [ -f $inc ]; then
-          if [ -z $found ]; then
-            found=$inc
-          else
-            if [ $found -ef $inc ]; then
-              #it dosn't matter at all
-              found=$inc
+  for file in *.{h,cpp}
+    for include in (sed -n 's/^#include "\([^"]*\)".*$/\1/p' $file)
+      if test ! -f $include
+        set found
+        for dir in $dirs 
+          set inc $dir/$include
+          if test -f $inc
+            if test -z $found
+              set found $inc
+              #echo "include \"$include\" in file $file is $inc"
+              #TODO actually do something with the found include path
             else
-              pwd
-              echo "already found $found, but got $inc"
-              found=
-              break
-            fi
-          fi
-        fi
-      done
-      if [ -z $found ]; then
-        echo "in $folder/$file can't resolve include $include"
-        # echo "in file $file"
-        # echo "in dirs "$(tr '\n' ' ' <<< $dirs )
-        # echo "in folder $folder"
-        # pwd
-        # else
-        #TODO actually do something with the found include path
-
-      fi
-    done
-  done
+              if /usr/bin/test $found -ef $inc
+                #it dosn't matter at all
+                echo "these files are the same: $found and $inc"
+                set found $inc
+              else
+                pwd
+                echo "already found $found, but got $inc"
+                set found
+                break
+              end
+            end
+          end
+        end
+        if test -z $found
+          if test -f $systemdir/$include
+            set found $systemdir/$include
+          else if test -f $styxnetdir/$include
+            set found $styxnetdir/$include
+          else
+            set notfound $notfound "$include;$folder;$file"
+            # echo "in dirs "$(tr '\n' ' ' <<< $dirs )
+            # echo "in folder $folder"
+            # pwd
+            # else
+          end
+        end
+      end
+    end
+  end
   cd -
-done
+end
+
+for nf in $notfound
+  set nfl (echo $nf | sed 'y/;/\n/')
+  set include $nfl[1]
+  set folder $nfl[2]
+  set file $nfl[3]
+
+  set found (find . | grep -i (echo $include | sed 's,^\(.*\)\.\(.*\)$,/\1\\\\.\2$,'))
+  # TODO what happens for several hits?
+  if test (count $found) -gt 1
+    echo "ambigious $include in $folder/$file:"
+    echo $found
+  else if test (count $found) -lt 1
+    echo "in $folder/$file can't resolve include $include"
+  else
+    # nothing to do here uniquely found a solution
+    # TODO actually do something with the solution
+  end
+end
+
 
 # for file in $(ag -l '#include ".*\.h"'); do
 #   echo FILE $file FILE

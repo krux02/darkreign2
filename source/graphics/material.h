@@ -14,7 +14,7 @@
 #include "vertex.h"
 
 #ifdef __DO_XMM_BUILD
-#include "xmm.h"
+#include <zzz/cooke/xmm/xmm.h>
 #endif
 
 //----------------------------------------------------------------------------

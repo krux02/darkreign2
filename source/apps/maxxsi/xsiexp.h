@@ -9,7 +9,7 @@
 #ifndef __ASCIIEXP__H
 #define __ASCIIEXP__H
 
-#include "Max.h"
+#include "max.h"
 #include "resource.h"
 #include "istdplug.h"
 #include "stdmat.h"

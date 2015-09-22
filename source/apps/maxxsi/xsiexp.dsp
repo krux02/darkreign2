@@ -89,22 +89,24 @@ LINK32=link.exe
 # Name "xsiexp - Win32 Debug"
 # Begin Group "libraries"
 
+# blabla just for the refactor script /I "../../3rdparty/max/include"
+
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\3rdparty\Max\lib\maxutil.lib
+SOURCE=..\..\3rdparty\max\lib\maxutil.lib
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\3rdparty\Max\lib\geom.lib
+SOURCE=..\..\3rdparty\max\lib\geom.lib
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\3rdparty\Max\lib\core.lib
+SOURCE=..\..\3rdparty\max\lib\core.lib
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\3rdparty\Max\lib\mesh.lib
+SOURCE=..\..\3rdparty\max\lib\mesh.lib
 # End Source File
 # End Group
 # Begin Source File

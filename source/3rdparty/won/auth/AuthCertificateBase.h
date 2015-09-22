@@ -9,7 +9,7 @@
 
 
 #include "AuthFamilyBuffer.h"
-#include "Crypt/EGPublicKey.h"
+#include "crypt/EGPublicKey.h"
 #include <list>
 
 // In the WONAuth namespace

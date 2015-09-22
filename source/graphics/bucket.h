@@ -10,7 +10,7 @@
 #define __BUCKET_H
 
 #include "vertex.h"
-#include "Bucketdesc.h"
+#include "bucketdesc.h"
 
 #define VERTICES_LOCKED(b)			((b) ? ((b)->IsVertexMemLocked()) : FALSE )
 #define INDICES_LOCKED(b)				((b) ? ((b)->IsIndexMemLocked()) : FALSE )
