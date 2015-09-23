@@ -3,13 +3,12 @@
 # this pattern is to extract all include paths
 # grep -o '/I "\([^ ]*\)"' < main.dsp | sort | uniq | sed -n 's/.*"\(.*\)"/\1/p'
 
-set systemdir  (dirname (status --current-filename))/system
-set styxnetdir (dirname (status --current-filename))/styxnet
-set scriptdir (pwd)
+set scriptdir (dirname (status --current-filename))
+set systemdir  $scriptdir/system
+set styxnetdir $scriptdir/styxnet
 set notfound
-set notfound_src
+set allfound
 
-echo "systemdir $systemdir"
 echo "scriptdir $scriptdir"
 
 for dsp in (find . | grep '\.dsp$' | grep -v 3rdparty)
@@ -48,9 +47,9 @@ for dsp in (find . | grep '\.dsp$' | grep -v 3rdparty)
         end
         if test -z $found
           if test -f $systemdir/$include
-            set found $systemdir/$include
+            set found "<system/$include>"
           else if test -f $styxnetdir/$include
-            set found $styxnetdir/$include
+            set found "<styxnet/$include>"
           else
             set notfound $notfound "$include;$folder;$file"
             # echo "in dirs "$(tr '\n' ' ' <<< $dirs )
@@ -58,6 +57,19 @@ for dsp in (find . | grep '\.dsp$' | grep -v 3rdparty)
             # pwd
             # else
           end
+        end
+        if test -n $found
+          if echo $found | grep -q '^\.\.'
+            # making relative path to absolute path
+            set found (pwd)/$found
+            while echo $found | grep -q '\.\.'
+              set found (echo $found | sed 's,/[^\./]*/\.\./,/,')
+            end
+            set found (echo $found | sed "s,^$scriptdir/,,")
+            set found "<$found>"
+            # echo $found
+          end
+          set allfound $allfound "$include;$folder;$file;$found"
         end
       end
     end
@@ -79,9 +91,13 @@ for nf in $notfound
   else if test (count $found) -lt 1
     echo "in $folder/$file can't resolve include $include"
   else
-    # nothing to do here uniquely found a solution
-    # TODO actually do something with the solution
+    set found (echo $found | sed 's,^\./,,')
+    set allfound $allfound "$nfl;<$found>"
   end
+end
+
+for x in $allfound
+  echo $x
 end
 
 
